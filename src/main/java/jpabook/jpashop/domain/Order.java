@@ -20,15 +20,14 @@ public class Order {
     @Column(name = "order_id")
     private Long id;
 
-    // 연관관계의 주인, FK 있는 곳으로 잡는게 좋다
-    @ManyToOne(fetch = LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    @OneToOne(fetch = LAZY)
+    @OneToOne(fetch = LAZY, cascade = CascadeType.ALL) // order 만! 쓰는 경우 all, 다른 곳에서도 같이 쓴다면 cascade.all 쓰면 안됨
     @JoinColumn(name = "delivery_id")
     // 애플리케이션 상 주문을 보고 배달을 보는 경우가 대부분.
     // 외래키를 갖는 주문이 연관 관계의 주인
