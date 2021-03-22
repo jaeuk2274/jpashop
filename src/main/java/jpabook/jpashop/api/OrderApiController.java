@@ -149,5 +149,4 @@ public class OrderApiController {
                         e.getKey().getAddress()))
                 .collect(toList());
     }
-    }
 }
