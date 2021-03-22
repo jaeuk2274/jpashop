@@ -18,8 +18,42 @@ public class OrderRepository {
         em.persist(order);
     }
 
+    public List<Order> findAll() {
+        return em.createQuery("select o from Order o", Order.class).getResultList();
+    }
+
     public Order findOne(Long id){
         return em.find(Order.class, id);
+    }
+
+    //OrderRepository 추가 코드
+    public List<Order> findAllWithMemberDelivery() {
+        return em.createQuery(
+                "select o from Order o" +
+                        " join fetch o.member m" +
+                        " join fetch o.delivery d", Order.class)
+                .getResultList();
+    }
+
+    //  컬렉션 페치 조인을 사용하면 페이징이 불가능
+    public List<Order> findAllWithItem() {
+        return em.createQuery(
+                "select distinct o from Order o" +
+                        " join fetch o.member m" +
+                        " join fetch o.delivery d" +
+                        " join fetch o.orderItems oi" +
+                        " join fetch oi.item i", Order.class)
+                .getResultList();
+    }
+
+    public List<Order> findAllWithMemberDelivery(int offset, int limit) {
+        return em.createQuery(
+                "select o from Order o" +
+                        " join fetch o.member m" +
+                        " join fetch o.delivery d", Order.class)
+                .setFirstResult(offset)
+                .setMaxResults(limit)
+                .getResultList();
     }
 
     // querydsl로 변경
