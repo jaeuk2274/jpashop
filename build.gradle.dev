@@ -27,6 +27,16 @@ repositories {
 	mavenCentral()
 }
 
+repositories {
+	maven {
+		url 'http://192.168.200.62:8081/nexus/content/groups/public/'
+		credentials {
+			username "admin"
+			password "CTneon10"
+		}
+	}
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
