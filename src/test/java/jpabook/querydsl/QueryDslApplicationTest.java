@@ -20,9 +20,13 @@ class QueryDslApplicationTest {
 
     @PersistenceContext
     EntityManager em;
+    // 여러 쓰레드에서 동시에 같은 EntityManager에 접근해도, 트랜잭션 마다 별도의 영속성 컨텍스트를 제공하기 때문에
+    // 동시성 문제는 걱정하지 않아도 된다
+    JPAQueryFactory queryFactory;
 
     @BeforeEach
     public void before() {
+        queryFactory = new JPAQueryFactory(em);
         Team teamA = new Team("teamA");
         Team teamB = new Team("teamB");
         em.persist(teamA);
@@ -52,13 +56,12 @@ class QueryDslApplicationTest {
     @Test
     public void startQuerydsl() {
         //member1을 찾아라.
-        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         QMember m = new QMember("m");
         Member findMember = queryFactory
-                .select(m)
-                .from(m)
-                .where(m.username.eq("member1"))//파라미터 바인딩 처리
-                .fetchOne();
+                            .select(m)
+                            .from(m)
+                            .where(m.username.eq("member1"))//파라미터 바인딩 처리
+                            .fetchOne();
         assertEquals(findMember.getUsername(),"member1");
     }
 }
