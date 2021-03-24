@@ -52,3 +52,6 @@
 ### Spring Data JPA
 
 ### QueryDSL
+
+
+### QueryDSL
