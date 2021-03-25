@@ -471,6 +471,48 @@ class QueryDslApplicationTest {
         return ageCond != null ? member.age.eq(ageCond) : null;
     }
 
+    // 벌크연산
+    @Test
+    public void bullk_query() throws Exception {
+        long count = queryFactory
+                .update(member)
+                .set(member.username, "비회원")
+                .where(member.age.lt(28))
+                .execute();
+
+        // 벌크 연산 후에는 무조건 flush, clear
+        count = queryFactory
+                .update(member)
+                .set(member.age, member.age.add(1))
+                .execute();
+
+        count = queryFactory
+                .delete(member)
+                .where(member.age.gt(18))
+                .execute();
+    }
+
+    @Test
+    public void sqlFunction_query() throws Exception {
+        String result = queryFactory
+                .select(Expressions.stringTemplate(
+                        "function('replace', {0}, {1}, {2})",
+                        member.username, "member", "M"))
+                .from(member)
+                .fetchFirst();
+
+        String result2 = queryFactory
+                .select(member.username)
+                .from(member)
+                .where(member.username.eq(member.username.lower()))
+                .fetchFirst();
+                //.where(member.username.eq(Expressions.stringTemplate("function('lower', {0})", member.username)))
+
+
+    }
+
+
+
 
 
 
